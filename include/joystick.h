@@ -108,11 +108,11 @@ public:
 
   void getState();
   bool sample(JoystickEvent *event);
+  int button_[20] = {0};
+  int axis_[10] = {0};
 
 private:
   JoystickEvent event_;
-  int button_[20] = {0};
-  int axis_[10] = {0};
 
   void openPath(std::string devicePath, bool blocking = false);
   int _fd;

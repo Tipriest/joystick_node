@@ -76,6 +76,15 @@ int main(int argc, char **argv) {
   
   joystick_setup(config.joystick_device, config.joystick_type,
                  config.joystick_bits);
+  ros::init(argc, argv, "joystick_node");
+  ros::NodeHandle nh("~");
+  ros::Rate rate(100);
+  joystick_pub = nh.advertise<sensor_msgs::Joy>("joystick_msg", 1);
+  while (true) {
+
+    ros::spinOnce();
+    rate.sleep();
+  }
   while (true) {
     usleep(10000);
     JoystickEvent jsevent;

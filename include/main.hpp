@@ -43,6 +43,7 @@ void joystick_setup(std::string device, std::string js_type, int bits) {
     js_id_.button["RB"] = 5;
     js_id_.button["SELECT"] = 6;
     js_id_.button["START"] = 7;
+    js_id_.button["XBOX"] = 8;
   }
   // Switch 手柄映射
   else if (js_type == "switch") {

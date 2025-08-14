@@ -1,6 +1,7 @@
 #pragma once
 #include "joystick.h"
 #include "msg_docs.h"
+#include <ros/ros.h>
 #include <sensor_msgs/Joy.h>
 #include <sensor_msgs/JoyFeedback.h>
 #include <sensor_msgs/JoyFeedbackArray.h>
@@ -10,6 +11,7 @@
 int max_value_ = (1 << 15); // 16 bits joystick
 Joystick *js_;
 JoystickId js_id_;
+ros::Publisher joystick_pub;
 
 // 初始化手柄，设置按键和轴的映射关系
 void joystick_setup(std::string device, std::string js_type, int bits) {

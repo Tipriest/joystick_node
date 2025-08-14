@@ -7,7 +7,7 @@
 noetic
 
 2. currently supported joystick type:
-xbox 
+xbox beitong_bd4a
 
 ### how to use
 

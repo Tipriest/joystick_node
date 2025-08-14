@@ -22,7 +22,3 @@ roslaunch joystick_node joystick_node.launch
 ### reference
 
 This joystick tool is based on https://github.com/drewnoakes/joystick and unitree_mujoco
-
-```
-sudo apt install joystick
-```

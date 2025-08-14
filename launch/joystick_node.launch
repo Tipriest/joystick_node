@@ -5,6 +5,7 @@
     name="rviz"
     output="screen"
     args="-d $(find trajectory_optimization)/launch/test.rviz"/> -->
-    <node pkg="joystick_node" type="joystick_node" name="joystick_node" output="screen" />
+    
+    <node pkg="joystick_node" type="joystick_node" name="joystick_node" output="screen"/>
   <!-- </group> -->
 </launch>

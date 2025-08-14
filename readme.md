@@ -1,5 +1,5 @@
 
-### how to use
+### supported
 
 ---
 
@@ -10,6 +10,7 @@ noetic
 xbox 
 
 ### how to use
+
 ```bash
 catkin build joystick_node
 source devel/setup.bash
@@ -22,6 +23,7 @@ rosrun joystick_node joystick_node
 ![alt text](image.png)
 
 ### reference
+
 This joystick tool is based on https://github.com/drewnoakes/joystick
 
 ```

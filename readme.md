@@ -1,9 +1,10 @@
 
 ### how to use
-1. now supported ros version:
+
+1. currently supported ros version:
 noetic
 
-2.now supported joystick type:
+2. currently supported joystick type:
 xbox 
 
 ### how to use

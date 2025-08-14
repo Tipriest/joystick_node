@@ -63,6 +63,17 @@ std::map<string, int> ButtonId = {
 };
 
 int main(int argc, char **argv) {
+  ros::init(argc, argv, "joystick_node");
+  ros::NodeHandle nh("~");
+  ros::Rate rate(100);
+  joystick_pub = nh.advertise<sensor_msgs::Joy>("joystick_msg", 1);
+  while(true){
+
+    ros::spinOnce();
+    rate.sleep();
+  }
+  
+  
   joystick_setup(config.joystick_device, config.joystick_type,
                  config.joystick_bits);
   while (true) {

@@ -1,3 +1,11 @@
+
+### how to use
+1. now supported ros version:
+noetic
+
+2.now supported joystick type:
+xbox 
+
 ### how to use
 ```bash
 catkin build joystick_node

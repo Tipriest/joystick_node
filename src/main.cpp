@@ -1,22 +1,23 @@
 #include "main.hpp"
-
 #include <iostream>
 #include <map>
 
 using namespace std;
 
 struct SimulationConfig {
-  int use_joystick = 1;
   std::string joystick_type = "xbox";
   std::string joystick_device = "/dev/input/js0";
   int joystick_bits = 16;
 } config;
 
-
 int main(int argc, char **argv) {
   ros::init(argc, argv, "joystick_node");
   ros::NodeHandle nh("~");
+  nh.param("joystick_type", config.joystick_type, config.joystick_type);
+  nh.param("joystick_device", config.joystick_device, config.joystick_device);
+  nh.param("joystick_bits", config.joystick_bits, config.joystick_bits);
   ros::Rate rate(100);
+
   joystick_setup(config.joystick_device, config.joystick_type,
                  config.joystick_bits);
   joystick_pub = nh.advertise<sensor_msgs::Joy>("joystick_msg", 1);
@@ -56,7 +57,6 @@ int main(int argc, char **argv) {
     joystick_rosmsgs.buttons[5] = jsevent_button_msgs[js_id_.button["RB"]];
     joystick_rosmsgs.buttons[6] = jsevent_button_msgs[js_id_.button["SELECT"]];
     joystick_rosmsgs.buttons[7] = jsevent_button_msgs[js_id_.button["START"]];
-    joystick_rosmsgs.buttons[8] = jsevent_button_msgs[js_id_.button["XBOX"]];
     joystick_pub.publish(joystick_rosmsgs);
     ros::spinOnce();
     rate.sleep();

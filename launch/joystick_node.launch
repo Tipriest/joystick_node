@@ -5,7 +5,7 @@
     name="rviz"
     output="screen"
     args="-d $(find trajectory_optimization)/launch/test.rviz"/> -->
-    <arg name="joystick_type" value = "beitong_bd4a" doc = "xbox beitong_bd4a"/>
+    <arg name="joystick_type" value = "ps5" doc = "xbox ps5 beitong_bd4a"/>
     <node pkg="joystick_node" type="joystick_node" name="joystick_node" output="screen">
         <param name="joystick_type" value="$(arg joystick_type)"/>
         <param name="joystick_device" value="/dev/input/js0"/>

@@ -1,4 +1,3 @@
-
 ### supported
 
 ---
@@ -7,7 +6,7 @@
 noetic
 
 2. currently supported joystick type:
-xbox beitong_bd4a
+xbox ps5 beitong_bd4a
 
 ### how to use
 

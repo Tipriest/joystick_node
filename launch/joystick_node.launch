@@ -10,6 +10,7 @@
         <param name="joystick_type" value="$(arg joystick_type)"/>
         <param name="joystick_device" value="/dev/input/js0"/>
         <param name="joystick_bits" value="16"/>
+        <remap from="/joystick_node/joystick_msg" to="/robot_control/joystick_msgs"/>
     </node>
   <!-- </group> -->
 </launch>

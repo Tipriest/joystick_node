@@ -15,9 +15,23 @@ catkin build joystick_node
 source devel/setup.bash
 roslaunch joystick_node joystick_node.launch
 ```
+<div align="center" style="margin: 20px 0;">
+  <img src="assets/image-1.png" 
+       alt="joystick msgs" 
+       title="joystick msgs"
+       width="800" 
+       style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"
+       loading="lazy"/>
+</div>
 
-![alt text](assets/image-1.png)
-
+<div align="center" style="margin: 20px 0;">
+  <img src="assets/joystick.png" 
+       alt="xbox pic" 
+       title="xbox pic"
+       width="800" 
+       style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"
+       loading="lazy"/>
+</div>
 ### reference
 
 This joystick tool is based on https://github.com/drewnoakes/joystick and unitree_mujoco

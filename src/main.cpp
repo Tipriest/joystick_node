@@ -5,7 +5,7 @@
 using namespace std;
 
 struct SimulationConfig {
-  std::string joystick_type = "xbox";
+  std::string joystick_type = "ps5";
   std::string joystick_device = "/dev/input/js0";
   int joystick_bits = 16;
 } config;

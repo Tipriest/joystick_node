@@ -1,7 +1,13 @@
 #include "main.hpp"
+#include "backward.hpp"
 #include <iostream>
 #include <map>
 
+namespace backward {
+
+backward::SignalHandling sh;
+
+} // namespace backward
 using namespace std;
 
 struct SimulationConfig {

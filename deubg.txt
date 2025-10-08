@@ -1,0 +1,4 @@
+process[joystick_node-1]: started with pid [74316]
+Joystick Type is ps5
+free(): invalid pointer
+corrupted size vs. prev_size

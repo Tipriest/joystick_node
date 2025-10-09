@@ -20,7 +20,7 @@ roslaunch joystick_node joystick_node.launch
        alt="joystick msgs" 
        title="joystick msgs"
        width="800" 
-       style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"
+       style="max-width: 60%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"
        loading="lazy"/>
 </div>
 
@@ -29,10 +29,30 @@ roslaunch joystick_node joystick_node.launch
        alt="xbox pic" 
        title="xbox pic"
        width="800" 
-       style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"
+       style="max-width: 60%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"
        loading="lazy"/>
 </div>
 
+
+```cpp
+  joystick_rosmsgs.axes[0] = jsevent_axis_msgs[js_id_.axis["LX"]];
+  joystick_rosmsgs.axes[1] = -jsevent_axis_msgs[js_id_.axis["LY"]];
+  joystick_rosmsgs.axes[2] = jsevent_axis_msgs[js_id_.axis["RX"]];
+  joystick_rosmsgs.axes[3] = -jsevent_axis_msgs[js_id_.axis["RY"]];
+  joystick_rosmsgs.axes[4] = jsevent_axis_msgs[js_id_.axis["LT"]];
+  joystick_rosmsgs.axes[5] = jsevent_axis_msgs[js_id_.axis["RT"]];
+  joystick_rosmsgs.axes[6] = jsevent_axis_msgs[js_id_.axis["DX"]];
+  joystick_rosmsgs.axes[7] = -jsevent_axis_msgs[js_id_.axis["DY"]];
+
+  joystick_rosmsgs.buttons[0] = jsevent_button_msgs[js_id_.button["X"]];
+  joystick_rosmsgs.buttons[1] = jsevent_button_msgs[js_id_.button["Y"]];
+  joystick_rosmsgs.buttons[2] = jsevent_button_msgs[js_id_.button["B"]];
+  joystick_rosmsgs.buttons[3] = jsevent_button_msgs[js_id_.button["A"]];
+  joystick_rosmsgs.buttons[4] = jsevent_button_msgs[js_id_.button["LB"]];
+  joystick_rosmsgs.buttons[5] = jsevent_button_msgs[js_id_.button["RB"]];
+  joystick_rosmsgs.buttons[6] = jsevent_button_msgs[js_id_.button["SELECT"]];
+  joystick_rosmsgs.buttons[7] = jsevent_button_msgs[js_id_.button["START"]];
+```
 ### reference
 
 This joystick tool is based on https://github.com/drewnoakes/joystick and unitree_mujoco

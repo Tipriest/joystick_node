@@ -35,23 +35,23 @@ roslaunch joystick_node joystick_node.launch
 
 
 ```cpp
-  joystick_rosmsgs.axes[0] = jsevent_axis_msgs[js_id_.axis["LX"]];
-  joystick_rosmsgs.axes[1] = -jsevent_axis_msgs[js_id_.axis["LY"]];
-  joystick_rosmsgs.axes[2] = jsevent_axis_msgs[js_id_.axis["RX"]];
-  joystick_rosmsgs.axes[3] = -jsevent_axis_msgs[js_id_.axis["RY"]];
-  joystick_rosmsgs.axes[4] = jsevent_axis_msgs[js_id_.axis["LT"]];
-  joystick_rosmsgs.axes[5] = jsevent_axis_msgs[js_id_.axis["RT"]];
-  joystick_rosmsgs.axes[6] = jsevent_axis_msgs[js_id_.axis["DX"]];
-  joystick_rosmsgs.axes[7] = -jsevent_axis_msgs[js_id_.axis["DY"]];
+  joystick_rosmsgs.axes[0] = jsevent_axis_msgs[js_id_.axis["LX"]];    //-32767-32767
+  joystick_rosmsgs.axes[1] = -jsevent_axis_msgs[js_id_.axis["LY"]];   //-32767-32767
+  joystick_rosmsgs.axes[2] = jsevent_axis_msgs[js_id_.axis["RX"]];    //-32767-32767
+  joystick_rosmsgs.axes[3] = -jsevent_axis_msgs[js_id_.axis["RY"]];   //-32767-32767
+  joystick_rosmsgs.axes[4] = jsevent_axis_msgs[js_id_.axis["LT"]];    //-32767-32767
+  joystick_rosmsgs.axes[5] = jsevent_axis_msgs[js_id_.axis["RT"]];    //-32767-32767
+  joystick_rosmsgs.axes[6] = jsevent_axis_msgs[js_id_.axis["DX"]];    //-32767-32767
+  joystick_rosmsgs.axes[7] = -jsevent_axis_msgs[js_id_.axis["DY"]];   //-32767-32767
 
-  joystick_rosmsgs.buttons[0] = jsevent_button_msgs[js_id_.button["X"]];
-  joystick_rosmsgs.buttons[1] = jsevent_button_msgs[js_id_.button["Y"]];
-  joystick_rosmsgs.buttons[2] = jsevent_button_msgs[js_id_.button["B"]];
-  joystick_rosmsgs.buttons[3] = jsevent_button_msgs[js_id_.button["A"]];
-  joystick_rosmsgs.buttons[4] = jsevent_button_msgs[js_id_.button["LB"]];
-  joystick_rosmsgs.buttons[5] = jsevent_button_msgs[js_id_.button["RB"]];
-  joystick_rosmsgs.buttons[6] = jsevent_button_msgs[js_id_.button["SELECT"]];
-  joystick_rosmsgs.buttons[7] = jsevent_button_msgs[js_id_.button["START"]];
+  joystick_rosmsgs.buttons[0] = jsevent_button_msgs[js_id_.button["X"]]; // 0 1
+  joystick_rosmsgs.buttons[1] = jsevent_button_msgs[js_id_.button["Y"]]; // 0 1
+  joystick_rosmsgs.buttons[2] = jsevent_button_msgs[js_id_.button["B"]]; // 0 1
+  joystick_rosmsgs.buttons[3] = jsevent_button_msgs[js_id_.button["A"]]; // 0 1
+  joystick_rosmsgs.buttons[4] = jsevent_button_msgs[js_id_.button["LB"]]; // 0 1
+  joystick_rosmsgs.buttons[5] = jsevent_button_msgs[js_id_.button["RB"]]; // 0 1
+  joystick_rosmsgs.buttons[6] = jsevent_button_msgs[js_id_.button["SELECT"]]; // 0 1
+  joystick_rosmsgs.buttons[7] = jsevent_button_msgs[js_id_.button["START"]]; // 0 1
 ```
 ### reference
 

@@ -2,7 +2,7 @@
   <!-- <group> -->
   <!-- <node pkg="rviz" type="rviz" name="rviz" output="screen" args="-d $(find trajectory_optimization)/launch/test.rviz"/> -->
   <arg name="joystick_type" value = "ps5" doc = "xbox ps5 beitong_bd4a"/>
-  <node pkg="joystick_node" type="joystick_node" name="joystick_node" output="screen">
+  <node pkg="joystick_node" type="joystick_node" name="joystick_node" output="screen" respawn = "true">
     <param name="joystick_type" value="$(arg joystick_type)"/>
     <param name="joystick_device" value="/dev/input/js0"/>
     <param name="joystick_bits" value="16"/>

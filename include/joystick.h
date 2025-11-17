@@ -25,6 +25,7 @@
 #include <sys/types.h>
 
 // Defaults to xbox gamepad
+// 对应xbox的通道映射
 struct JoystickId {
 
   std::map<std::string, int> axis = {

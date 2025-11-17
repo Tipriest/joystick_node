@@ -6,87 +6,41 @@
 #include <sensor_msgs/JoyFeedback.h>
 #include <sensor_msgs/JoyFeedbackArray.h>
 #include <string>
+#include <thread>
 
-// values
-int max_value_ = (1 << 15); // 16 bits joystick
-Joystick *js_;
-JoystickId js_id_;
-ros::Publisher joystick_pub;
+class JoystickRosNode {
+public:
+  JoystickRosNode(ros::NodeHandle &nh);
+  ~JoystickRosNode();
+  // ros related
+  ros::Publisher joystick_pub;
+  sensor_msgs::Joy joystick_rosmsgs;
 
-// 初始化手柄，设置按键和轴的映射关系
-void joystick_setup(std::string device, std::string js_type, int bits) {
-  js_ = new Joystick(device);
-  if (!js_->isFound()) {
-    std::cout << "Error: Joystick open failed." << std::endl;
-    exit(1);
-  }
+  // joystick basic related
+  std::vector<int> jsevent_axis_msgs, jsevent_button_msgs;
 
-  max_value_ = (1 << (bits - 1));
+  // std::thread 读取手柄消息的线程
+  std::atomic<bool> thread_running; // 原子布尔，用于线程安全标志
+  std::thread workerThread;
 
-  // Xbox 手柄映射
-  if (js_type == "xbox") {
-    std::cout << "Joystick Type is xbox" << std::endl;
-    js_id_.axis["LX"] = 0; // 左摇杆X
-    js_id_.axis["LY"] = 1; // 左摇杆Y
-    js_id_.axis["RX"] = 3; // 右摇杆X
-    js_id_.axis["RY"] = 4; // 右摇杆Y
-    js_id_.axis["LT"] = 2; // 左扳机
-    js_id_.axis["RT"] = 5; // 右扳机
-    js_id_.axis["DX"] = 6; // 十字键X
-    js_id_.axis["DY"] = 7; // 十字键Y
+  // 初始化手柄
+  void joystick_open();
 
-    js_id_.button["X"] = 2;
-    js_id_.button["Y"] = 3;
-    js_id_.button["B"] = 1;
-    js_id_.button["A"] = 0;
-    js_id_.button["LB"] = 4;
-    js_id_.button["RB"] = 5;
-    js_id_.button["SELECT"] = 6;
-    js_id_.button["START"] = 7;
-  }
-  // beitong_bd4a 手柄映射
-  else if (js_type == "beitong_bd4a") {
-    std::cout << "Joystick Type is beitong_bd4a" << std::endl;
-    js_id_.axis["LX"] = 0; // 左摇杆X
-    js_id_.axis["LY"] = 1; // 左摇杆Y
-    js_id_.axis["RX"] = 2; // 右摇杆X
-    js_id_.axis["RY"] = 3; // 右摇杆Y
-    js_id_.axis["LT"] = 5; // 左扳机
-    js_id_.axis["RT"] = 4; // 右扳机
-    js_id_.axis["DX"] = 6; // 十字键X
-    js_id_.axis["DY"] = 7; // 十字键Y
+  // 映射不同的手柄按键和轴的关系
+  void joystick_mapping();
 
-    js_id_.button["X"] = 3;
-    js_id_.button["Y"] = 4;
-    js_id_.button["B"] = 1;
-    js_id_.button["A"] = 0;
-    js_id_.button["LB"] = 6;
-    js_id_.button["RB"] = 7;
-    js_id_.button["SELECT"] = 10;
-    js_id_.button["START"] = 11;
-  }
-  // ps5 手柄映射
-  else if (js_type == "ps5") {
-    std::cout << "Joystick Type is ps5" << std::endl;
-    js_id_.axis["LX"] = 0; // 左摇杆X
-    js_id_.axis["LY"] = 1; // 左摇杆Y
-    js_id_.axis["RX"] = 3; // 右摇杆X
-    js_id_.axis["RY"] = 4; // 右摇杆Y
-    js_id_.axis["LT"] = 2; // 左扳机
-    js_id_.axis["RT"] = 5; // 右扳机
-    js_id_.axis["DX"] = 6; // 十字键X
-    js_id_.axis["DY"] = 7; // 十字键Y
+  void threadFunc();
 
-    js_id_.button["X"] = 3;
-    js_id_.button["Y"] = 2;
-    js_id_.button["B"] = 1;
-    js_id_.button["A"] = 0;
-    js_id_.button["LB"] = 4;
-    js_id_.button["RB"] = 5;
-    js_id_.button["SELECT"] = 8;
-    js_id_.button["START"] = 9;
-  }
-  else {
-    std::cout << "current not supported gamepad." << std::endl;
-  }
-}
+  // 默认情况下的手柄的配置
+  struct defaultJoyCfg {
+    std::string joystick_type = "ps5";
+    std::string joystick_device = "/dev/input/js0";
+    int joystick_bits = 16;
+  } defaultJoyCfg;
+
+private:
+  // joystick手柄底层接口
+  Joystick *js_;
+  // joystick手柄对不同类型手柄的映射
+  JoystickId js_id_;
+};

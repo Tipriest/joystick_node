@@ -1,36 +1,39 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.8)
 project(joystick_node)
 
-set(CMAKE_BUILD_TYPE "Release")
-set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb")
-set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall")
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
 set(CMAKE_CXX_STANDARD 17)
-set(Eigen3_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR})
-message("!!!CMAKE_CXX_FLAGS is " ${CMAKE_CXX_FLAGS_DEBUG})
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Eigen3 REQUIRED)
-find_package(PCL REQUIRED)
-find_package(catkin REQUIRED COMPONENTS
-    roscpp
-    std_msgs
-)
-
-catkin_package(
-  INCLUDE_DIRS include
-  CATKIN_DEPENDS roscpp std_msgs
-)
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(sensor_msgs REQUIRED)
 
 include_directories(
     include
-    SYSTEM
-    ${catkin_INCLUDE_DIRS}
 )
-message("!!!catkin_INCLUDE_DIRS is  ${catkin_INCLUDE_DIRS}")
-
-# add_compile_options(-mno-avx)
 
 add_executable(joystick_node
     src/main.cpp
     src/joystick.cpp
 )
-target_link_libraries(joystick_node ${catkin_LIBRARIES})
+
+ament_target_dependencies(joystick_node
+  rclcpp
+  sensor_msgs
+)
+
+install(TARGETS
+  joystick_node
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}/
+)
+
+ament_package()

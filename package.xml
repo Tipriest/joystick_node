@@ -1,23 +1,18 @@
 <?xml version="1.0"?>
-<package format="2">
-    <name>joystick_node</name>
-    <version>0.0.0</version>
-    <description>joystick package for ros1</description>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>joystick_node</name>
+  <version>1.0.0</version>
+  <description>ROS2 joystick node for xbox, ps5, and beitong_bd4a controllers</description>
+  <maintainer email="tipriest@todo.todo">tipriest</maintainer>
+  <license>Apache-2.0</license>
 
-    <maintainer email="a1503741059@163.com"></maintainer>
-    <license>TODO</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
 
-    <buildtool_depend>catkin</buildtool_depend>
+  <depend>rclcpp</depend>
+  <depend>sensor_msgs</depend>
 
-    <build_depend>roscpp</build_depend>
-    <build_depend>std_msgs</build_depend>
-    <build_depend>sensor_msgs</build_depend>
-
-    <build_export_depend>roscpp</build_export_depend>
-    <build_export_depend>std_msgs</build_export_depend>
-    <build_export_depend>sensor_msgs</build_export_depend>
-
-    <exec_depend>roscpp</exec_depend>
-    <exec_depend>std_msgs</exec_depend>
-    <exec_depend>sensor_msgs</exec_depend>
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
 </package>

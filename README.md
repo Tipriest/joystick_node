@@ -3,9 +3,10 @@
 ---
 
 1. currently supported ros version:
-noetic
+ros1/noetic
+ros2/humble
 
-2. currently supported joystick type:
+3. currently supported joystick type:
 xbox ps5 beitong_bd4a
 
 ### how to use

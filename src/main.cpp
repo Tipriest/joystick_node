@@ -76,7 +76,7 @@ void JoystickRosNode::threadFunc() {
     joystick_rosmsgs.buttons[6] = jsevent_button_msgs[js_id_.button["SELECT"]];
     joystick_rosmsgs.buttons[7] = jsevent_button_msgs[js_id_.button["START"]];
     joystick_pub.publish(joystick_rosmsgs);
-    usleep(2000);
+    usleep(10000);
   }
 }
 

@@ -1,7 +1,10 @@
 #include "main.hpp"
 #include "backward.hpp"
+#include <chrono>
 #include <iostream>
 #include <map>
+#include <stdexcept>
+#include <thread>
 
 namespace backward {
 
@@ -16,13 +19,18 @@ JoystickRosNode::JoystickRosNode(ros::NodeHandle &nh) {
            defaultJoyCfg.joystick_device);
   nh.param("joystick_bits", defaultJoyCfg.joystick_bits,
            defaultJoyCfg.joystick_bits);
+
   joystick_open();
   joystick_mapping();
-  joystick_pub = nh.advertise<sensor_msgs::Joy>("joystick_msg", 0);
+
+  joystick_pub = nh.advertise<sensor_msgs::Joy>("joystick_msg", 10);
+
   joystick_rosmsgs.axes = std::vector<_Float32>(js_id_.axis.size(), 0);
   joystick_rosmsgs.buttons = std::vector<int32_t>(js_id_.button.size(), 0);
+
   jsevent_axis_msgs = std::vector<int>(10, 0);
   jsevent_button_msgs = std::vector<int>(20, 0);
+
   thread_running = true;
   workerThread = std::thread(&JoystickRosNode::threadFunc, this);
 }
@@ -32,32 +40,51 @@ JoystickRosNode::~JoystickRosNode() {
   if (workerThread.joinable()) {
     workerThread.join();
   }
+  delete js_;
+  js_ = nullptr;
   std::cout << "joystick WorkerThread destructed, thread stopped." << std::endl;
 }
 
 void JoystickRosNode::joystick_open() {
   js_ = new Joystick(defaultJoyCfg.joystick_device);
   if (!js_->isFound()) {
-    std::cout << "Error: Joystick open failed." << std::endl;
-    exit(1);
+    ROS_FATAL_STREAM("Joystick open failed. device=" << defaultJoyCfg.joystick_device);
+    throw std::runtime_error("Joystick open failed");
   }
-  return;
 }
 
 void JoystickRosNode::threadFunc() {
+  using clock = std::chrono::steady_clock;
+  constexpr auto kPeriod = std::chrono::milliseconds(10); // 100Hz
+  auto next_tick = clock::now() + kPeriod;
+
+  auto last_tick = clock::now();
+
   while (thread_running) {
+    std::this_thread::sleep_until(next_tick);
+    const auto now = clock::now();
+    const auto dt = std::chrono::duration<double>(now - last_tick).count();
+    last_tick = now;
+    next_tick += kPeriod;
+
+    if (dt > 1e-9) {
+      const double actual_hz = 1.0 / dt;
+      ROS_INFO_STREAM_THROTTLE(1.0, "[Joystick Thread] Actual Hz: " << actual_hz);
+    }
+
     JoystickEvent jsevent;
     if (js_->sample(&jsevent)) {
       if (jsevent.isButton()) {
-        jsevent_button_msgs[jsevent.number] = jsevent.value == 1 ? 1 : 0;
-        // printf("Button %u is %s\n", jsevent.number,
-        //        jsevent.value == 0 ? "up" : "down");
+        const size_t idx = static_cast<size_t>(jsevent.number);
+        if (idx >= jsevent_button_msgs.size()) jsevent_button_msgs.resize(idx + 1, 0);
+        jsevent_button_msgs[idx] = (jsevent.value == 1) ? 1 : 0;
       } else if (jsevent.isAxis()) {
-        jsevent_axis_msgs[jsevent.number] = jsevent.value;
-        // printf("Axis %u is at position %d\n", jsevent.number,
-        // jsevent.value);
+        const size_t idx = static_cast<size_t>(jsevent.number);
+        if (idx >= jsevent_axis_msgs.size()) jsevent_axis_msgs.resize(idx + 1, 0);
+        jsevent_axis_msgs[idx] = jsevent.value;
       }
     }
+
     joystick_rosmsgs.axes[0] = jsevent_axis_msgs[js_id_.axis["LX"]];
     joystick_rosmsgs.axes[1] = -jsevent_axis_msgs[js_id_.axis["LY"]];
     joystick_rosmsgs.axes[2] = jsevent_axis_msgs[js_id_.axis["RX"]];
@@ -76,7 +103,6 @@ void JoystickRosNode::threadFunc() {
     joystick_rosmsgs.buttons[6] = jsevent_button_msgs[js_id_.button["SELECT"]];
     joystick_rosmsgs.buttons[7] = jsevent_button_msgs[js_id_.button["START"]];
     joystick_pub.publish(joystick_rosmsgs);
-    usleep(10000);
   }
 }
 
@@ -153,7 +179,6 @@ int main(int argc, char **argv) {
   ros::init(argc, argv, "joystick_node");
   ros::NodeHandle nh("~");
   JoystickRosNode joynode(nh);
-  ros::Rate rate(100);
   ros::spin();
   return 0;
 }

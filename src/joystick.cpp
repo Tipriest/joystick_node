@@ -13,6 +13,8 @@
 // Copyright Drew Noakes 2013-2016
 
 #include "joystick.h"
+#include <cerrno>   // added
+#include <unistd.h> // added (read/close)
 
 Joystick::Joystick() { openPath("/dev/input/js0"); }
 
@@ -29,19 +31,36 @@ Joystick::Joystick(std::string devicePath, bool blocking) {
 }
 
 void Joystick::openPath(std::string devicePath, bool blocking) {
+  // Allow re-opening safely
+  if (_fd >= 0) {
+    close(_fd);
+    _fd = -1;
+  }
+
   // Open the device using either blocking or non-blocking
-  _fd = open(devicePath.c_str(), blocking ? O_RDONLY : O_RDONLY | O_NONBLOCK);
+  int flags = O_RDONLY | O_CLOEXEC;
+  if (!blocking) flags |= O_NONBLOCK;
+
+  _fd = open(devicePath.c_str(), flags);
 }
 
 bool Joystick::sample(JoystickEvent *event) {
-  int bytes = read(_fd, event, sizeof(*event));
+  if (_fd < 0) return false;
 
-  if (bytes == -1)
+  ssize_t bytes = 0;
+  do {
+    bytes = read(_fd, event, sizeof(*event));
+  } while (bytes < 0 && errno == EINTR);
+
+  if (bytes < 0) {
+    // Non-blocking "no data" is not an error for sampling
+    if (errno == EAGAIN || errno == EWOULDBLOCK) return false;
     return false;
+  }
 
   // NOTE if this condition is not met, we're probably out of sync and this
   // Joystick instance is likely unusable
-  return bytes == sizeof(*event);
+  return static_cast<size_t>(bytes) == sizeof(*event);
 }
 
 bool Joystick::isFound() { return _fd >= 0; }
@@ -56,7 +75,12 @@ void Joystick::getState() {
   }
 }
 
-Joystick::~Joystick() { close(_fd); }
+Joystick::~Joystick() {
+  if (_fd >= 0) {
+    close(_fd);
+    _fd = -1;
+  }
+}
 
 std::ostream &operator<<(std::ostream &os, const JoystickEvent &e) {
   os << "type=" << static_cast<int>(e.type)

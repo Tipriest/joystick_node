@@ -3,6 +3,8 @@
 #include <chrono>
 #include <iostream>
 #include <map>
+#include <stdexcept>
+#include <thread>
 
 namespace backward {
 
@@ -30,6 +32,7 @@ JoystickRosNode::JoystickRosNode() : Node("joystick_node") {
   // Initialize message vectors
   joystick_rosmsgs.axes = std::vector<float>(js_id_.axis.size(), 0);
   joystick_rosmsgs.buttons = std::vector<int32_t>(js_id_.button.size(), 0);
+
   jsevent_axis_msgs = std::vector<int>(10, 0);
   jsevent_button_msgs = std::vector<int>(20, 0);
 
@@ -42,27 +45,56 @@ JoystickRosNode::~JoystickRosNode() {
   if (workerThread.joinable()) {
     workerThread.join();
   }
+  delete js_;
+  js_ = nullptr;
   RCLCPP_INFO(this->get_logger(),
               "joystick WorkerThread destructed, thread stopped.");
-  delete js_;
 }
 
 void JoystickRosNode::joystick_open() {
   js_ = new Joystick(defaultJoyCfg.joystick_device);
   if (!js_->isFound()) {
-    RCLCPP_ERROR(this->get_logger(), "Error: Joystick open failed.");
-    exit(1);
+    RCLCPP_ERROR(this->get_logger(), "Joystick open failed. device=%s",
+                 defaultJoyCfg.joystick_device.c_str());
+    throw std::runtime_error("Joystick open failed");
   }
 }
 
 void JoystickRosNode::threadFunc() {
-  while (thread_running && rclcpp::ok()) {
+  using clock = std::chrono::steady_clock;
+  constexpr auto kPeriod = std::chrono::milliseconds(10); // 100Hz
+  auto next_tick = clock::now() + kPeriod;
+
+  auto last_tick = clock::now();
+
+  while (thread_running) {
+    std::this_thread::sleep_until(next_tick);
+    const auto now = clock::now();
+    const auto dt = std::chrono::duration<double>(now - last_tick).count();
+    last_tick = now;
+    next_tick += kPeriod;
+
+    if (dt > 1e-9) {
+      const double actual_hz = 1.0 / dt;
+      RCLCPP_INFO_THROTTLE(
+          this->get_logger(),
+          *this->get_clock(), // 或 rclcpp::Clock(RCL_SYSTEM_TIME) 等
+          1000,               // 节流周期，毫秒，这里是 1s
+          "[Joystick Thread] Actual Hz: %.2f", actual_hz);
+    }
+
     JoystickEvent jsevent;
     if (js_->sample(&jsevent)) {
       if (jsevent.isButton()) {
-        jsevent_button_msgs[jsevent.number] = jsevent.value == 1 ? 1 : 0;
+        const size_t idx = static_cast<size_t>(jsevent.number);
+        if (idx >= jsevent_button_msgs.size())
+          jsevent_button_msgs.resize(idx + 1, 0);
+        jsevent_button_msgs[idx] = (jsevent.value == 1) ? 1 : 0;
       } else if (jsevent.isAxis()) {
-        jsevent_axis_msgs[jsevent.number] = jsevent.value;
+        const size_t idx = static_cast<size_t>(jsevent.number);
+        if (idx >= jsevent_axis_msgs.size())
+          jsevent_axis_msgs.resize(idx + 1, 0);
+        jsevent_axis_msgs[idx] = jsevent.value;
       }
     }
 
@@ -83,12 +115,7 @@ void JoystickRosNode::threadFunc() {
     joystick_rosmsgs.buttons[5] = jsevent_button_msgs[js_id_.button["RB"]];
     joystick_rosmsgs.buttons[6] = jsevent_button_msgs[js_id_.button["SELECT"]];
     joystick_rosmsgs.buttons[7] = jsevent_button_msgs[js_id_.button["START"]];
-
-    // Set timestamp
-    joystick_rosmsgs.header.stamp = this->now();
-
     joystick_pub->publish(joystick_rosmsgs);
-    usleep(2000);
   }
 }
 

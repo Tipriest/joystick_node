@@ -2,11 +2,11 @@
 
 ---
 
-1. currently supported ros version:  
-- ros1/noetic  
+1. currently supported ros version:
+- ros1/noetic
 - ros2/humble
 
-2. currently supported joystick type:  
+2. currently supported joystick type:
 - xbox
 - ps5
 - beitong_bd4a
@@ -19,19 +19,19 @@ source devel/setup.bash
 roslaunch joystick_node joystick_node.launch
 ```
 <div align="center" style="margin: 20px 0;">
-  <img src="assets/image-1.png" 
-       alt="joystick msgs" 
+  <img src="assets/image-1.png"
+       alt="joystick msgs"
        title="joystick msgs"
-       width="800" 
+       width="800"
        style="max-width: 60%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"
        loading="lazy"/>
 </div>
 
 <div align="center" style="margin: 20px 0;">
-  <img src="assets/joystick.png" 
-       alt="xbox pic" 
+  <img src="assets/joystick.png"
+       alt="xbox pic"
        title="xbox pic"
-       width="800" 
+       width="800"
        style="max-width: 60%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"
        loading="lazy"/>
 </div>
@@ -51,10 +51,10 @@ roslaunch joystick_node joystick_node.launch
   joystick_rosmsgs.buttons[1] = jsevent_button_msgs[js_id_.button["Y"]]; // 0 1
   joystick_rosmsgs.buttons[2] = jsevent_button_msgs[js_id_.button["B"]]; // 0 1
   joystick_rosmsgs.buttons[3] = jsevent_button_msgs[js_id_.button["A"]]; // 0 1
-  joystick_rosmsgs.buttons[4] = jsevent_button_msgs[js_id_.button["LB"]]; // 0 1
-  joystick_rosmsgs.buttons[5] = jsevent_button_msgs[js_id_.button["RB"]]; // 0 1
-  joystick_rosmsgs.buttons[6] = jsevent_button_msgs[js_id_.button["SELECT"]]; // 0 1
-  joystick_rosmsgs.buttons[7] = jsevent_button_msgs[js_id_.button["START"]]; // 0 1
+  joystick_rosmsgs.buttons[4] = jsevent_button_msgs[js_id_.button["LB"]]; // 0 1 左上角的小扳机
+  joystick_rosmsgs.buttons[5] = jsevent_button_msgs[js_id_.button["RB"]]; // 0 1 右上角的小扳机
+  joystick_rosmsgs.buttons[6] = jsevent_button_msgs[js_id_.button["SELECT"]]; // 0 1 触摸板左边的小按钮
+  joystick_rosmsgs.buttons[7] = jsevent_button_msgs[js_id_.button["START"]]; // 0 1 触摸板右边的小按钮
 ```
 ### reference
 
